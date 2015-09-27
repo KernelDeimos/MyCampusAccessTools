@@ -76,5 +76,3 @@ class CoursePageLoader:
         data = vals.get_string()
 
         return (url,data)
-
-print("No problems with dependancies");
