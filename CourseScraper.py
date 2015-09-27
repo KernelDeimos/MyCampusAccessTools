@@ -5,6 +5,10 @@ from bs4 import BeautifulSoup as BowlShit
 import urllib.request as urllib2
 import json
 
+from mycamp_lib import acronyms as acros
+from lib.TableParser import TableParser
+from lib.PostData import PostData
+
 class CourseScraper:
 	def __init__(self):
 		pass
@@ -238,7 +242,7 @@ class CoursePageLoader:
 		self.subj = subj
 
 	def get_page(self):
-		url, data = self.get_url_and_data()
+		url, data = self.gen_url_and_data()
 		req = urllib2.Request(url, data=data)
 		"""
 		print("=== Headers ===")
