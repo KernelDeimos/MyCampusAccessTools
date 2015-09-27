@@ -3,6 +3,7 @@
 
 from bs4 import BeautifulSoup as BowlShit
 import urllib.request as urllib2
+import json
 
 class CourseScraper:
 	def __init__(self):
@@ -10,9 +11,16 @@ class CourseScraper:
 	def test_parser(self):
 		url_base = "http://ssbp.mycampus.ca"
 		url_action = "/prod/bwckschd.p_get_crse_unsec"
-		pl = CoursePageLoader(url_base,url_action);
+		# Setup a page loader
+		pl = CoursePageLoader(url_base,url_action)
 		pl.set_term("fall","2015")
-		pl = CoursePageParser();
+		pl.set_subj("SOFE")
+		# Setup a page parser & parse the page
+		pp = CoursePageParser(pl.get_page())
+		pp.parse_page()
+		# get the parsed page data
+		obj = pp.get_parsed_object()
+		print(json.dumps(obj))
 
 class CoursePageParser:
 	def __init__(self, pageData):
@@ -21,9 +29,11 @@ class CoursePageParser:
 		self.pageSoup = BowlShit(pageData)
 
 		# initializers
-		self.parsedData = {}
+		self.parsedData = []
 		self.curr_course = None
 		self.curr_class = None
+	def get_parsed_object(self):
+		return self.parsedData
 	def parse_page(self):
 		# implicit args
 		pageSoup = self.pageSoup
@@ -287,4 +297,5 @@ class CoursePageLoader:
 
 
 if __name__ == "__main__":
-	main = CourseScraper();
+	cs = CourseScraper();
+	cs.test_parser()
