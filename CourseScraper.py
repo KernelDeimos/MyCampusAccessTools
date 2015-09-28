@@ -1,10 +1,13 @@
 #!/usr/bin/python3
 # PyPy supports Python3 now! Yay!
 
-from bs4 import BeautifulSoup as BowlShit
+# Python imports
 import urllib.request as urllib2
 import json
-
+import pprint
+# External imports
+from bs4 import BeautifulSoup as BowlShit
+# Internal imports
 from mycamp_lib import acronyms as acros
 from lib.TableParser import TableParser
 from lib.PostData import PostData
@@ -13,15 +16,23 @@ class CourseScraper:
 	def __init__(self):
 		pass
 	def test_parser(self):
-		url_base = "http://ssbp.mycampus.ca"
+		url_base = "https://ssbp.mycampus.ca"
 		url_action = "/prod/bwckschd.p_get_crse_unsec"
 		# Setup a page loader
 		pl = CoursePageLoader(url_base,url_action)
 		pl.set_term("fall","2015")
 		pl.set_subj("SOFE")
 		# Setup a page parser & parse the page
-		pp = CoursePageParser(pl.get_page())
-		pp.parse_page()
+		try:
+			pp = CoursePageParser(pl.get_page())
+			pp.parse_page()
+		except urllib2.HTTPError as e:
+			print("HTTP Error "+str(e.code))
+			print("| "+e.reason)
+			print("Request details:")
+			pprint.PrettyPrinter(indent=4).pprint(pl.get_request_details())
+			return
+
 		# get the parsed page data
 		obj = pp.get_parsed_object()
 		print(json.dumps(obj))
@@ -235,6 +246,7 @@ class CoursePageParser:
 class CoursePageLoader:
 	def __init__(self,url_base,url_action):
 		self.actionURL = url_base + url_action
+		self.req = None
 		
 	def set_term(self,semester,year):
 		self.term_in = str(year) + str(acros.semester[semester])
@@ -243,15 +255,18 @@ class CoursePageLoader:
 
 	def get_page(self):
 		url, data = self.gen_url_and_data()
-		req = urllib2.Request(url, data=data)
+
+		self.req = urllib2.Request(url, data=data)
+		print(url)
+		self.req.add_header('Referer', "https://ssbp.mycampus.ca/prod/bwckgens.p_proc_term_date")
 		"""
 		print("=== Headers ===")
 		print(req.headers)
 		print("=== Data ===")
 		print(req.data)
 		"""
-		response = urllib2.urlopen(req)
-		pageContents = response.read()
+		response = urllib2.urlopen(self.req)
+		pageContents = response.read().decode('utf-8')
 
 		try:
 			with open('./last_source.html','w') as f:
@@ -294,9 +309,15 @@ class CoursePageLoader:
 		vals.add_item('end_mi'          , "0")
 		vals.add_item('end_ap'          , "a")
 
-		data = vals.get_string()
+		data = vals.get_bytes()
 
 		return (url,data)
+	def get_request_details(self):
+		details = {}
+		details['method'] = self.req.get_method()
+		details['data'] = self.req.data
+		details['headers'] = self.req.header_items()
+		return details
 
 
 

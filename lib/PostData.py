@@ -7,3 +7,5 @@ class PostData:
         # Python for the win! Love one-lining this stuff! - EAD
         res = '&'.join([item[0] + "=" + item[1] for item in self.items])
         return res
+    def get_bytes(self):
+    	return self.get_string().encode('ascii')
