@@ -270,10 +270,10 @@ class CoursePageLoader:
 		pageContents = response.read().decode('utf-8')
 
 		try:
-			with open('./last_source.html','w') as f:
+			with open('./log/last_source.log.html','w') as f:
 				f.write(pageContents)
 		except IOError:
-			print("Warning: PageLoader couldn't write to ./last_source.html")
+			print("Warning: PageLoader couldn't write to ./log/last_source.log.html")
 
 		return pageContents
 	def gen_url_and_data(self):

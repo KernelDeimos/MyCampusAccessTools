@@ -1,0 +1,9 @@
+# Compiled Python
+*.pyc
+
+# Logs
+*.log
+*.log.html
+
+# Application garbage
+.directory
