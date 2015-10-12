@@ -2,10 +2,12 @@
 # PyPy supports Python3 now! Yay!
 
 # Python imports
+import sys
 import urllib.request as urllib2
 import json
 import pprint
 import logging
+import argparse
 # External imports
 from bs4 import BeautifulSoup as BowlShit
 # Internal imports
@@ -323,5 +325,16 @@ class CoursePageLoader:
 
 
 if __name__ == "__main__":
+	p = argparse.ArgumentParser(description="Scraper for UOIT courses on MyCampus. Communicates to MyCampus over HTTP, parses data, and generates a JSON file with course information.")
+	p.add_argument('-l', '--logging', help="Set logging level", default="info")
+	args = p.parse_args()
+
+	loggerLevel = logging.INFO
+	if (args.logging == "info"):
+		loggerLevel = logging.INFO
+	elif (args.logging == "debug"):
+		loggerLevel = logging.DEBUG
+	logging.basicConfig(level=loggerLevel)
+
 	cs = CourseScraper();
 	cs.test_parser()
