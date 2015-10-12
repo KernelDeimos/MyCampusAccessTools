@@ -1,3 +1,5 @@
+import logging
+
 class TableParser:
     """A class which parses a table using BS4 and calls the given functions while parsing
 

@@ -5,6 +5,7 @@
 import urllib.request as urllib2
 import json
 import pprint
+import logging
 # External imports
 from bs4 import BeautifulSoup as BowlShit
 # Internal imports
@@ -41,7 +42,7 @@ class CoursePageParser:
 	def __init__(self, pageData):
 		# parameters
 		self.pageData = pageData
-		self.pageSoup = BowlShit(pageData)
+		self.pageSoup = BowlShit(pageData, "html.parser")
 
 		# initializers
 		self.parsedData = []
