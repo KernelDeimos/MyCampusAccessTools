@@ -11,6 +11,7 @@ class TableParser:
     def __init__(self):
         pass
     def parse_with(self,soup):
+        logging.debug(','.join([str(x.name) for x in soup.children]))
         for tableElement in soup.children:
 
             logging.debug("Parsing tableElement: " + str(tableElement.name))

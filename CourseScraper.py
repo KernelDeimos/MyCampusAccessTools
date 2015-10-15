@@ -161,6 +161,7 @@ class CoursePageParser:
 						key = name_and_key_associations[nameToTest]
 						self.curr_class[key] = val;
 	def parse_section_timetable(self, table):
+		logging.debug("Parsing timetable")
 		for row in table.children:
 			logging.debug(row.name)
 			if row.name == "tbody":
